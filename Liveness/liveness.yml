@@ -20,3 +20,20 @@ spec:
       initialDelaySeconds: 15
       failureThreshold: 1
       periodSeconds: 5
+
+
+#Liveness HTTP Request
+# In the following example, the kubelet sends the HTTP GET request to the /healthz endpoint of the application, on port 8080. If that returns a failure, then the kubelet will restart the affected container; otherwise, it would consider the application to be alive:
+
+...
+     livenessProbe:
+       httpGet:
+         path: /healthz
+         port: 8080
+         httpHeaders:
+         - name: X-Custom-Header
+           value: Awesome
+       initialDelaySeconds: 15
+       periodSeconds: 5
+
+...
