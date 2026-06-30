@@ -58,3 +58,7 @@ A Pod with containers that do not report ready status will not receive traffic f
 Readiness Probes are configured similarly to Liveness Probes. Their configuration fields and options also remain the same. Readiness probes are also defined as Readiness command, Readiness HTTP request, TCP readiness probe, and gRPC readiness probe.
 
 Please review the Readiness Probes for more details.
+===================================================================================================
+
+Startup Probes
+The newest member of the Probes family is the Startup Probe. This probe was designed for legacy applications that may need more time to fully initialize and its purpose is to delay the Liveness and Readiness probes, a delay long enough to allow for the application to fully initialize.
