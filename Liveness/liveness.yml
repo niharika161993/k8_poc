@@ -58,3 +58,16 @@ spec:
         port: 2379
       initialDelaySeconds: 10
 ...
+
+
+#Readiness probe
+
+...
+    readinessProbe:
+          exec:
+            command:
+            - cat
+            - /tmp/healthy
+          initialDelaySeconds: 5 
+          periodSeconds: 5
+...
