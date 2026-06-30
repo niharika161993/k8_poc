@@ -237,3 +237,59 @@ spec:
     nodePort: 31443
 
 The my-service Service resource exposes Pods labeled app==myapp with possibly one container listening on ports 80 and 443, as described by the two targetPort fields. The Service will be visible inside the cluster on its ClusterIP and ports 8080 and 8443 as described by the two port fields, and it will also be accessible to incoming requests from outside the cluster on the two nodePort fields 31080 and 31443. When manifests describe multiple ports, they need to be named as well, for clarity, as described by the two spec.port.name fields with values http and https respectively. This Service is configured to capture traffic on ports 8080 and 8443 from within the cluster, or on ports 31080 and 31443 from outside the cluster, and forward that traffic to the ports 80 and 443 respectively of the Pods running the container.
+
+
+
+Port Forwarding
+Another application exposure mechanism in Kubernetes is port forwarding. In Kubernetes the port forwarding feature allows users to easily forward a local port to an application port. Thanks to its flexibility, the application port can be a Pod container port, a Service port, and even a Deployment container port (from its Pod template). This allows users to test and debug their application running in a remote cluster by targeting a port on their local workstation (either http://localhost:port or http://127.0.0.1:port), a solution for remote cloud clusters or virtualized on premises clusters.
+
+Port forwarding can be utilized as an alternative to the NodePort Service type because it does not require knowledge of the public IP address of the Kubernetes Node. As long as there are no firewalls blocking access to the desired local workstation port, such as 8080 in the examples below, the port forwarding method can quickly allow access to the application running in the cluster.
+
+Based on the earlier explored frontend Deployment and frontend-svc Service, port forwarding can be easily achieved via one of the following methods:
+
+$ kubectl port-forward deploy/frontend 8080:5000 
+
+$ kubectl port-forward frontend-77cbdf6f79-qsdts 8080:5000 
+
+$ kubectl port-forward svc/frontend-svc 8080:80
+
+All three commands forward port 8080 of the local workstation to the container port 5000 of the Deployment and Pod respectively, and to the Service port 80. While the Pod resource type is implicit, therefore optional and can be omitted, the Deployment and Service resource types are required to be explicitly supplied in the presented syntax.
+
+
+
+========================================
+
+Exposing an Application (1)
+In a previous chapter, we explored different ServiceTypes. With ServiceTypes we can define the access method for a Service. For a NodePort ServiceType, Kubernetes opens up a static port on all the worker nodes. If we connect to that port from any node, we are proxied to the ClusterIP of the Service. Next, let's use the NodePort ServiceType while creating a Service.
+
+Create a webserver-svc.yaml file with the following content:
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  labels:
+    app: nginx
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: nginx 
+
+From an earlier chapter, remember the imperative approach to generate a YAML definition manifest for a Service object of type NodePort. Keep in mind, however, that the desired Service name: web-service is expected to be different from the label and selector app: nginx, therefore the more complex multi-line command should be used for this purpose.
+
+Using kubectl apply, create the Service:
+
+$ kubectl apply -f webserver-svc.yaml
+
+service/web-service created
+
+A more direct method of creating a Service is by exposing the previously created Deployment (this method requires an existing Deployment).
+
+Expose a Deployment with the kubectl expose command:
+
+$ kubectl expose deployment webserver --name=web-service --type=NodePort
+
+service/web-service exposed
