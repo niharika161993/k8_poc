@@ -31,3 +31,14 @@ Deploy an Ingress Resource
 Once the Ingress Controller is deployed, we can create an Ingress resource using the kubectl create command. For example, if we create a virtual-host-ingress.yaml file with the Name-Based Virtual Hosting Ingress rule definition that we saw in the Ingress (2) section, then we use the following command to create an Ingress resource:
 
 $ kubectl create -f virtual-host-ingress.yaml
+
+Access Services Using Ingress
+With the Ingress resource we just created, we should now be able to access the webserver-blue-svc or webserver-green-svc services using the blue.example.com and green.example.com URLs. As our current setup is on Minikube, we will need to update the host configuration file (/etc/hosts on Mac and Linux) on our workstation to the Minikube IP for those URLs. Do not remove any existing entries from /etc/hosts, only add the Minikube IP and the two host entries for blue and green services respectively. After the update, the file should look similar to:
+
+$ sudo vim /etc/hosts
+
+127.0.0.1        localhost
+::1              localhost
+192.168.99.100   blue.example.com green.example.com 
+
+Now we can open blue.example.com and green.example.com on the browser and access each application.
