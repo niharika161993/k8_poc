@@ -49,3 +49,12 @@ spec:
       periodSeconds: 5
 ...
 
+#gRPC Liveness Probe
+#The gRPC Liveness Probe can be used for applications implementing the gRPC health checking protocol. It requires for a port to be defined, and optionally a service field may help adapt the probe for liveness or readiness by allowing the use of the same port.
+
+...
+    livenessProbe:
+      grpc:
+        port: 2379
+      initialDelaySeconds: 10
+...
